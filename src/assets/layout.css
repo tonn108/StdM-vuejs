@@ -1,0 +1,57 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'navbar navbar'
+    'sidebar content';
+  grid-template-columns: 250px 1fr;
+  grid-template-rows: 60px 1fr;
+  height: 100vh;
+  transition: grid-template-columns 0.3s ease;
+}
+
+.navbar {
+  grid-area: navbar;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background-color: #f4f4f4;
+  padding: 10px;
+  transition: width 0.3s ease;
+  width: 250px;
+}
+
+.content {
+  grid-area: content;
+  padding: 10px;
+  transition: margin-left 0.3s ease;
+  overflow: auto;
+}
+
+/* สำหรับ sidebar collapsed state */
+.sidebar-collapsed {
+  grid-template-columns: 60px 1fr;
+}
+
+.sidebar-collapsed .sidebar {
+  width: 60px;
+}
+
+.sidebar-collapsed .sidebar span,
+.sidebar-collapsed .sidebar .menu-title {
+  display: none;
+}
+
+.sidebar-collapsed .content {
+  margin-left: 0;
+}
+
+/* ปรับแต่ง transition */
+.sidebar, .content {
+  transition: all 0.3s ease;
+}

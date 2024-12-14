@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Student Management</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .toggle-form {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            color: #666;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            position: relative;
+        }
+
+        .toggle-btn.active {
+            color: #6e8efb;
+        }
+
+        .toggle-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #6e8efb;
+            animation: slideIn 0.3s ease;
+        }
+
+        .form-wrapper {
+            position: relative;
+            height: auto;
+            width: 90%;
+            transition: height 0.5s ease;
+        }
+
+        .form-scroll {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .form-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .form-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .form-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        .form-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .form {
+            position: absolute;
+            width: 100%;
+            transition: all 0.5s ease;
+        }
+
+        .login-form {
+            position: relative;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .register-form {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translateY(50px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .show-register .login-form {
+            position: absolute;
+            transform: translateY(-50px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .show-register .register-form {
+            position: relative;
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6e8efb;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-left: 15px;
+            padding: 1rem;
+            background: #6e8efb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #5c7cfa;
+            transform: translateY(-2px);
+        }
+
+        @keyframes slideIn {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div id="login-app">
+        <div class="form-container">
+            <div class="toggle-form">
+                <button 
+                    :class="['toggle-btn', { active: !isRegister }]"
+                    @click="isRegister = false"
+                >
+                    เข้าสู่ระบบ
+                </button>
+                <button 
+                    :class="['toggle-btn', { active: isRegister }]"
+                    @click="isRegister = true"
+                >
+                    สมัครสมาชิก
+                </button>
+            </div>
+
+            <div :class="['form-wrapper', { 'show-register': isRegister }]">
+                <!-- Login Form -->
+                <form @submit.prevent="handleLogin" class="form login-form">
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            v-model="loginForm.username" 
+                            placeholder="ชื่อผู้ใช้"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <input 
+                            type="password" 
+                            v-model="loginForm.password" 
+                            placeholder="รหัสผ่าน"
+                            required
+                        >
+                    </div>
+                    <button type="submit" class="submit-btn">เข้าสู่ระบบ</button>
+                </form>
+
+                <!-- Register Form -->
+                <form @submit.prevent="handleRegister" class="form register-form">
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            v-model="registerForm.username" 
+                            placeholder="ชื่อผู้ใช้"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <input 
+                            type="password" 
+                            v-model="registerForm.password" 
+                            placeholder="รหัสผ่าน"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <input 
+                            type="password" 
+                            v-model="registerForm.confirmPassword" 
+                            placeholder="ยืนยันรหัสผ่าน"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            v-model="registerForm.first_name" 
+                            placeholder="ชื่อ"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            v-model="registerForm.last_name" 
+                            placeholder="นามสกุล"
+                            required
+                        >
+                    </div>
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            v-model="registerForm.email" 
+                            placeholder="อีเมล"
+                            required
+                        >
+                    </div>
+                    <button type="submit" class="submit-btn">สมัครสมาชิก</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue
+
+        createApp({
+            setup() {
+                const isRegister = ref(false)
+                const loginForm = ref({
+                    username: '',
+                    password: ''
+                })
+                const registerForm = ref({
+                    username: '',
+                    password: '',
+                    confirmPassword: '',
+                    first_name: '',
+                    last_name: '',
+                    email: '',
+                    role: 'teacher'
+                })
+
+                const handleLogin = async () => {
+                    try {
+                        const response = await axios.post('http://localhost:3000/api/login', loginForm.value)
+                        if (response.data.token) {
+                            localStorage.setItem('token', response.data.token)
+                            localStorage.setItem('user', JSON.stringify(response.data.user))
+                            window.location.href = 'http://localhost:5173'
+                        }
+                    } catch (error) {
+                        alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง')
+                    }
+                }
+
+                const handleRegister = async () => {
+                    if (registerForm.value.password !== registerForm.value.confirmPassword) {
+                        alert('รหัสผ่านไม่ตรงกัน')
+                        return
+                    }
+
+                    try {
+                        const response = await axios.post('http://localhost:3000/api/register', {
+                            username: registerForm.value.username,
+                            password: registerForm.value.password,
+                            first_name: registerForm.value.first_name,
+                            last_name: registerForm.value.last_name,
+                            email: registerForm.value.email,
+                            role: registerForm.value.role
+                        })
+                        alert('สมัครสมาชิกสำเร็จ')
+                        isRegister.value = false
+                        registerForm.value = {
+                            username: '',
+                            password: '',
+                            confirmPassword: '',
+                            first_name: '',
+                            last_name: '',
+                            email: '',
+                            role: 'teacher'
+                        }
+                    } catch (error) {
+                        alert('เกิดข้อผิดพลาดในการสมัครสมาชิก')
+                    }
+                }
+
+                return {
+                    isRegister,
+                    loginForm,
+                    registerForm,
+                    handleLogin,
+                    handleRegister
+                }
+            }
+        }).mount('#login-app')
+    </script>
+</body>
+</html>

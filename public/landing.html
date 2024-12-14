@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <style>
+        /* CSS สำหรับ landing page */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .landing-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 3rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+        p {
+            font-size: 1.2rem;
+            color: #34495e;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.2s;
+        }
+        .enter-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: #6e8efb;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.4s;
+        }
+        .enter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <h1>ระบบจัดการข้อมูลนักเรียน</h1>
+        <p>จัดการข้อมูลนักเรียนอย่างมีประสิทธิภาพ ง่าย และรวดเร็ว</p>
+        <a href="login.html" class="enter-btn">เข้าสู่เว็บไซต์</a>
+    </div>
+</body>
+</html>
